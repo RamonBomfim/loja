@@ -3,6 +3,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -16,6 +17,7 @@ import { Type } from 'class-transformer';
 
 export class CreateProductDTO {
   @IsUUID(undefined, { message: 'ID de usuário inválido' })
+  @IsOptional()
   userId: string;
 
   @IsString()

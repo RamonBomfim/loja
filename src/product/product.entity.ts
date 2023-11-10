@@ -3,18 +3,19 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-// import { ProductCharacteristic } from './product-characteristic.entity';
-// import { ProductImage } from './product-image.entity';
+import { ProductCharacteristicEntity } from './product-characteristic.entity';
+import { ProductImageEntity } from './product-image.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id', length: 100, nullable: false })
+  @Column({ name: 'user_id', length: 100, nullable: true })
   userId: string;
 
   @Column({ name: 'name', length: 100, nullable: false })
@@ -29,8 +30,19 @@ export class ProductEntity {
   @Column({ name: 'description', length: 255, nullable: false })
   description: string;
 
-  // characteristics: ProductCharacteristic[];
-  // images: ProductImage[];
+  @OneToMany(
+    () => ProductCharacteristicEntity,
+    (productCharacteristicEntity) => productCharacteristicEntity.product,
+    { cascade: true, eager: true },
+  )
+  characteristics: ProductCharacteristicEntity[];
+
+  @OneToMany(
+    () => ProductImageEntity,
+    (productImageEntity) => productImageEntity.product,
+    { cascade: true, eager: true },
+  )
+  images: ProductImageEntity[];
 
   @Column({ name: 'category', length: 100, nullable: false })
   category: string;

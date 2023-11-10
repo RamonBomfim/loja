@@ -19,7 +19,9 @@ export class ProductService {
   async productList() {
     const savedProducts = await this.productRepository.find();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const productList = savedProducts.map((_product) => new ProductListDTO());
+    const productList = savedProducts.map(
+      (product) => new ProductListDTO(product),
+    );
 
     return productList;
   }

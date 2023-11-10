@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { ProductRepository } from './product.repository';
 import { CreateProductDTO } from './dto/CreateProduct.dto';
 import { UpdateProductDTO } from './dto/UpdateProduct.dto';
 import { ProductEntity } from './product.entity';
@@ -16,10 +15,7 @@ import { ProductService } from './product.service';
 
 @Controller('/products')
 export class ProductsController {
-  constructor(
-    private readonly productRepository: ProductRepository,
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Post()
   async createProduct(@Body() productData: CreateProductDTO) {
@@ -27,11 +23,11 @@ export class ProductsController {
     productEntity.id = randomUUID();
     productEntity.userId = productData.userId;
     productEntity.name = productData.name;
-    // productEntity.characteristics = productData.characteristics;
+    productEntity.characteristics = productData.characteristics;
     productEntity.description = productData.description;
     productEntity.value = productData.value;
     productEntity.quantity = productData.quantity;
-    // productEntity.images = productData.images;
+    productEntity.images = productData.images;
     productEntity.category = productData.category;
 
     this.productService.createProduct(productEntity);
