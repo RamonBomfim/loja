@@ -7,7 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { UserEntity } from './user.entity';
 import { v4 as uuid } from 'uuid';
@@ -16,7 +16,7 @@ import { UpdateUserDTO } from './dto/UpdateUser.dto';
 
 @Controller('/users')
 export class UserController {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
 
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
@@ -26,7 +26,7 @@ export class UserController {
     userEntity.name = userData.name;
     userEntity.id = uuid();
 
-    this.userRepository.save(userEntity);
+    this.userService.createUser(userEntity);
     return {
       id: new UserListDTO(userEntity.id, userEntity.name),
       message: 'Usuário criado com sucesso.',
@@ -35,17 +35,14 @@ export class UserController {
 
   @Get()
   async listUsers() {
-    const savedUsers = await this.userRepository.list();
-    const userList = savedUsers.map(
-      (user) => new UserListDTO(user.id, user.name),
-    );
+    const savedUsers = await this.userService.userList();
 
-    return userList;
+    return savedUsers;
   }
 
   @Put('/:id')
   async updateUser(@Param('id') id: string, @Body() newData: UpdateUserDTO) {
-    const updatedUser = await this.userRepository.update(id, newData);
+    const updatedUser = await this.userService.updateUser(id, newData);
 
     return {
       user: updatedUser,
@@ -55,7 +52,7 @@ export class UserController {
 
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
-    const deletedUser = await this.userRepository.delete(id);
+    const deletedUser = await this.userService.deleteUser(id);
 
     return {
       user: deletedUser,
